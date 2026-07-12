@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Asset Management</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <!-- 顶部栏 -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <span class="brand-icon">⛓</span>
+        <span class="brand-text">IT Asset Management</span>
+      </div>
+      <div class="product-switcher">
+        <span class="product-item active">Products <span class="caret">▾</span></span>
+        <span class="product-item">ITAM</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-icon" title="搜索">🔍</span>
+      <span class="topbar-icon" title="通知">🔔</span>
+      <span class="topbar-item">云智慧测试-202...</span>
+      <span class="topbar-item">English ▾</span>
+      <span class="topbar-item">Admin ▾</span>
+    </div>
+  </header>
+
+  <!-- 主体：侧边栏 + 内容区 -->
+  <div class="main">
+    <!-- 左侧导航 -->
+    <aside class="sidebar" id="sidebar">
+      <!-- 由 JS 动态渲染 -->
+    </aside>
+
+    <!-- 内容区 -->
+    <main class="content" id="content">
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="page" id="page"><!-- 由路由加载 --></div>
+    </main>
+  </div>
+
+  <!-- 全局 Modal 容器 -->
+  <div id="modal-root"></div>
+  <div id="toast-root"></div>
+
+  <!-- 脚本 -->
+  <script src="scripts/store.js"></script>
+  <script src="scripts/seed.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/router.js"></script>
+  <script src="scripts/relations.js"></script>
+  <script src="scripts/crud-factory.js"></script>
+  <script src="scripts/modules/portal.js"></script>
+  <script src="scripts/modules/asset.js"></script>
+  <script src="scripts/modules/maintenance.js"></script>
+  <script src="scripts/modules/audit.js"></script>
+  <script src="scripts/modules/contract.js"></script>
+  <script src="scripts/modules/inventory.js"></script>
+  <script src="scripts/modules/org.js"></script>
+  <script src="scripts/modules/cost.js"></script>
+  <script src="scripts/modules/license.js"></script>
+  <script src="scripts/modules/settings.js"></script>
+  <script src="scripts/modules/resource.js"></script>
+  <script src="scripts/modules/userCenter.js"></script>
+  <script src="scripts/modules/cmdb.js"></script>
+  <script src="scripts/modules/warning.js"></script>
+  <script src="scripts/modules/selfService.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>
