@@ -110,13 +110,14 @@
 
     // ===== 位置管理（树）=====
     seed.locations = [
-      { id: 'loc-root', name: '全球', addressType: '地区', parentId: null, fullPath: '全球', code: 'GLOBAL' },
-      { id: 'loc-1', name: '中国', addressType: '国家', parentId: 'loc-root', fullPath: '全球/中国', code: 'CN' },
-      { id: 'loc-2', name: '广东', addressType: '省份', parentId: 'loc-1', fullPath: '全球/中国/广东', code: 'GD' },
-      { id: 'loc-3', name: '北京', addressType: '城市', parentId: 'loc-1', fullPath: '全球/中国/北京', code: 'BJ' },
-      { id: 'loc-4', name: '佛山', addressType: '城市', parentId: 'loc-2', fullPath: '全球/中国/广东/佛山', code: 'FS' },
-      { id: 'loc-5', name: '美的总部大楼', addressType: '建筑', parentId: 'loc-4', fullPath: '全球/中国/广东/佛山/美的总部大楼', code: 'MDHQ' },
-      { id: 'loc-6', name: 'IDC-广州', addressType: '建筑', parentId: 'loc-2', fullPath: '全球/中国/广东/IDC-广州', code: 'IDC-GZ' }
+      { id: 'loc-root', name: 'Asia', addressType: '地区', parentId: null, fullPath: 'Asia', code: 'ASIA', contact: '', phone: '', zip: '', longitude: '100.000', latitude: '30.000', description: '亚洲地区根节点' },
+      { id: 'loc-1', name: 'China', addressType: '国家', parentId: 'loc-root', fullPath: 'Asia/China', code: 'CN', contact: '王经理', phone: '010-88888888', zip: '100000', longitude: '116.404', latitude: '39.915', description: '中国' },
+      { id: 'loc-2', name: 'Beijing', addressType: '城市', parentId: 'loc-1', fullPath: 'Asia/China/Beijing', code: 'BJ', contact: '李主管', phone: '010-66666666', zip: '100000', longitude: '116.404', latitude: '39.915', description: '北京市' },
+      { id: 'loc-3', name: 'Guangdong', addressType: '省份', parentId: 'loc-1', fullPath: 'Asia/China/Guangdong', code: 'GD', contact: '陈主管', phone: '020-33333333', zip: '510000', longitude: '113.264', latitude: '23.129', description: '广东省' },
+      { id: 'loc-4', name: 'Foshan', addressType: '城市', parentId: 'loc-3', fullPath: 'Asia/China/Guangdong/Foshan', code: 'FS', contact: '张主管', phone: '0757-88888888', zip: '528000', longitude: '113.123', latitude: '23.021', description: '佛山市' },
+      { id: 'loc-5', name: '美的总部大楼', addressType: '建筑', parentId: 'loc-4', fullPath: 'Asia/China/Guangdong/Foshan/美的总部大楼', code: 'MDHQ', contact: '何总', phone: '0757-88888888', zip: '528000', longitude: '113.123', latitude: '23.456', description: '美的集团总部' },
+      { id: 'loc-6', name: 'Shanghai', addressType: '城市', parentId: 'loc-1', fullPath: 'Asia/China/Shanghai', code: 'SH', contact: '刘主管', phone: '021-66666666', zip: '200000', longitude: '121.474', latitude: '31.230', description: '上海市' },
+      { id: 'loc-7', name: 'IDC-Guangzhou', addressType: '建筑', parentId: 'loc-3', fullPath: 'Asia/China/Guangdong/IDC-Guangzhou', code: 'IDC-GZ', contact: '技术组', phone: '020-99999999', zip: '510000', longitude: '113.264', latitude: '23.129', description: '广州IDC机房' }
     ];
 
     // ===== 公司/供应商/产品（组织管理）=====

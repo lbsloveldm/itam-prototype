@@ -5,7 +5,7 @@
   'use strict';
 
   const PREFIX = 'itam_';
-  const SEED_FLAG = 'itam_seeded_v2';
+  const SEED_FLAG = 'itam_seeded_v3';
 
   // ------- 通用集合操作 -------
   function read(key) {
