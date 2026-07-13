@@ -6,11 +6,17 @@
 
   let selectedNodeId = null;
   let mode = 'view'; // 'view' | 'newRoot' | 'newChild' | 'edit'
+  let expandedNodes = new Set(); // 记录展开的节点ID
 
   function renderLocationPage({ pageEl, crumbEl }) {
     Router.setCrumb(crumbEl, [{ label: '资源管理', path: '/resource/location' }, { label: '位置管理' }]);
     const all = Store.listAll('locations');
     const tree = buildTree(all);
+
+    // 默认展开根节点
+    if (expandedNodes.size === 0) {
+      tree.forEach(n => expandedNodes.add(n.id));
+    }
 
     const title = mode === 'newRoot' ? '新建根节点' : (mode === 'newChild' ? '新建子节点' : (mode === 'edit' && selectedNodeId) ? (Store.getById('locations', selectedNodeId) || {}).name : '位置详情');
     pageEl.innerHTML = `
@@ -49,12 +55,20 @@
   }
 
   function renderTree(nodes, parentId, depth) {
-    return nodes.map(n => `
-      <div class="tree-node ${selectedNodeId === n.id ? 'selected' : ''}" data-id="${UI.esc(n.id)}" data-depth="${depth}">
-        <span>${depth > 0 ? '└─ ' : ''}${UI.esc(n.name)} <span class="text-muted" style="font-size:11px">(${UI.esc(n.addressType || '')})</span></span>
+    return nodes.map(n => {
+      const hasChildren = n.children && n.children.length > 0;
+      const isExpanded = expandedNodes.has(n.id);
+      const isSelected = selectedNodeId === n.id;
+      const arrow = hasChildren
+        ? `<span class="tree-arrow ${isExpanded ? 'expanded' : ''}" data-toggle-id="${UI.esc(n.id)}">${isExpanded ? '▼' : '▶'}</span>`
+        : `<span class="tree-arrow-placeholder"></span>`;
+      return `
+      <div class="tree-node ${isSelected ? 'selected' : ''}" data-id="${UI.esc(n.id)}" data-depth="${depth}">
+        ${arrow}<span class="tree-label">${UI.esc(n.name)} <span class="text-muted" style="font-size:11px">(${UI.esc(n.addressType || '')})</span></span>
       </div>
-      ${n.children && n.children.length > 0 ? `<div class="tree-children">${renderTree(n.children, n.id, depth + 1)}</div>` : ''}
-    `).join('');
+      ${hasChildren && isExpanded ? `<div class="tree-children">${renderTree(n.children, n.id, depth + 1)}</div>` : ''}
+    `;
+    }).join('');
   }
 
   function renderLocationForm() {
@@ -92,13 +106,34 @@
   }
 
   function bindLocationEvents(root, all) {
-    root.querySelectorAll('.tree-node').forEach(el => {
-      el.onclick = () => {
-        selectedNodeId = el.getAttribute('data-id');
-        mode = 'edit';
+    // 点击展开/收缩箭头：只切换展开状态，不影响选中
+    root.querySelectorAll('.tree-arrow[data-toggle-id]').forEach(arrow => {
+      arrow.onclick = (e) => {
+        e.stopPropagation(); // 阻止冒泡到节点点击
+        const nodeId = arrow.getAttribute('data-toggle-id');
+        if (expandedNodes.has(nodeId)) {
+          expandedNodes.delete(nodeId);
+        } else {
+          expandedNodes.add(nodeId);
+        }
         renderLocationPage({ pageEl: root, crumbEl: document.getElementById('breadcrumb') });
       };
     });
+
+    // 点击节点：选中 + 更新右侧 + 展开当前节点子节点
+    root.querySelectorAll('.tree-node').forEach(el => {
+      el.onclick = (e) => {
+        // 如果点击的是箭头，已被上面的 stopPropagation 拦截，不会到这里
+        selectedNodeId = el.getAttribute('data-id');
+        mode = 'edit';
+        // 选中节点时自动展开其子节点
+        if (selectedNodeId) {
+          expandedNodes.add(selectedNodeId);
+        }
+        renderLocationPage({ pageEl: root, crumbEl: document.getElementById('breadcrumb') });
+      };
+    });
+
     const newRoot = root.querySelector('[data-act=new-root]');
     if (newRoot) newRoot.onclick = () => { selectedNodeId = null; mode = 'newRoot'; renderLocationPage({ pageEl: root, crumbEl: document.getElementById('breadcrumb') }); };
     const newChild = root.querySelector('[data-act=new-child]');
@@ -113,6 +148,7 @@
       const ok = await UI.confirm({ title: '确认删除', content: '确定删除该位置节点？子节点将成为孤儿。', danger: true });
       if (ok) {
         Store.remove('locations', selectedNodeId);
+        expandedNodes.delete(selectedNodeId);
         selectedNodeId = null;
         mode = 'view';
         UI.toast('删除成功', 'success');
@@ -132,12 +168,17 @@
       }
       if (mode === 'newRoot' || mode === 'newChild') {
         Store.create('locations', data);
+        // 新建后自动展开父节点
+        if (data.parentId) expandedNodes.add(data.parentId);
+        selectedNodeId = Store.listAll('locations').slice(-1)[0].id;
+        expandedNodes.add(selectedNodeId);
         UI.toast('创建成功', 'success');
+        mode = 'edit';
       } else if (selectedNodeId) {
         Store.update('locations', selectedNodeId, data);
         UI.toast('保存成功', 'success');
+        mode = 'view';
       }
-      mode = 'view';
       renderLocationPage({ pageEl: root, crumbEl: document.getElementById('breadcrumb') });
     };
     const cancel = root.querySelector('[data-act=cancel-form]');
